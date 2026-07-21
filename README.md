@@ -1,4 +1,4 @@
-# Plan Bear Enterprise Platform - Frontend
+# Plan Bear Enterprise Platform - Backend
 
 ## 1. 專案簡介
 
