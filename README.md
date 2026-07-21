@@ -154,7 +154,7 @@ npm install
 
 ## Configure Environment
 
-建立 `.env` 檔案：
+建立 `.env.local` 檔案：
 
 ### Demo Mode（推薦）
 
@@ -310,10 +310,10 @@ http://localhost:3005/api-docs
 ## 12. 作者
 
 Bear Shen
+
 - GitHub： https://github.com/bearlong
 - Linkedin： https://www.linkedin.com/in/cheng-long-shen-1843082b7/
 - email： a86774546@gmail.com
-
 
 ### 專長
 

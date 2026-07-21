@@ -73,7 +73,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://localhost:9000",
-
+      "https://plan-bear-frontend-one.vercel.app/",
       "http://workflow.example.com.tw/",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
