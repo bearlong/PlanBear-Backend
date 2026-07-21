@@ -1,0 +1,59 @@
+{
+  "name": "expressrfq",
+  "version": "1.0.0",
+  "description": "expressrfq.js",
+  "main": "index.js",
+  "type": "module",
+  "resolutions": {
+    "**/cross-spawn": "7.0.6"
+  },
+  "scripts": {
+    "start": "node -r dotenv/config ./bin/www",
+    "prod": "cross-env NODE_ENV=production dotenv_config_path=.env.production node -r dotenv/config ./bin/www",
+    "dev": "cross-env NODE_ENV=development dotenv_config_path=.env.dev node -r dotenv/config ./bin/www",
+    "local": "cross-env NODE_ENV=local dotenv_config_path=.env.local node -r dotenv/config ./bin/www"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.47.10",
+    "activedirectory2": "^2.2.0",
+    "argon2": "^0.41.1",
+    "basic-ftp": "^6.0.1",
+    "colors": "^1.4.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.0",
+    "express-session": "^1.18.1",
+    "http-errors": "^2.0.0",
+    "iconv-lite": "^0.7.2",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
+    "morgan": "^1.10.0",
+    "mssql": "^11.0.1",
+    "multer": "^1.4.5-lts.1",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.3",
+    "p-limit": "^6.2.0",
+    "path": "^0.12.7",
+    "readline": "^1.3.0",
+    "session-file-store": "^1.5.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.17.0",
+    "xlsx": "^0.18.5",
+    "xml2js": "^0.6.2",
+    "yamljs": "^0.3.0"
+  },
+  "imports": {
+    "#utils/*": "./utils/*"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "npm-force-resolutions": "^0.0.10"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}
