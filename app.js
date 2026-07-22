@@ -68,14 +68,32 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://localhost:9000",
+  "https://plan-bear-frontend-one.vercel.app",
+  "http://workflow.example.com.tw",
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://localhost:9000",
-      "https://plan-bear-frontend-one.vercel.app",
-      "http://workflow.example.com.tw/",
-    ],
+    origin(origin, callback) {
+      // Postman 或 server-to-server 沒有 Origin
+      if (!origin) return callback(null, true);
+
+      // 正式網域
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Vercel Preview Deployment
+      if (/^https:\/\/plan-bear-frontend-.*\.vercel\.app$/.test(origin)) {
+        return callback(null, true);
+      }
+
+      console.log("Blocked CORS:", origin);
+      return callback(new Error("Not allowed by CORS"));
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
