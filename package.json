@@ -8,10 +8,10 @@
     "**/cross-spawn": "7.0.6"
   },
   "scripts": {
-    "start": "node -r dotenv/config ./bin/www",
-    "prod": "cross-env NODE_ENV=production dotenv_config_path=.env.production node -r dotenv/config ./bin/www",
-    "dev": "cross-env NODE_ENV=development dotenv_config_path=.env.dev node -r dotenv/config ./bin/www",
-    "local": "cross-env NODE_ENV=local dotenv_config_path=.env.local node -r dotenv/config ./bin/www"
+    "local": "dotenv_config_path=.env.local node -r dotenv/config ./bin/www",
+    "dev": "nodemon -r dotenv/config ./bin/www",
+    "prod": "node -r dotenv/config ./bin/www",
+    "start": "node -r dotenv/config ./bin/www"
   },
   "keywords": [],
   "author": "",

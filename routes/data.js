@@ -712,25 +712,36 @@ const cleanExcelData = (rows) => {
 
 router.get("/files", async (req, res) => {
   const filename = req.query.filename;
+
   if (!filename) {
     return res
       .status(400)
       .json({ status: "error", message: "缺少 filename 參數" });
   }
 
-  const folderPath =
-    process.env.FILE_UPLOAD_PATH || path.join(__dirname, "../data/uploads");
-  const filePath = path.join(folderPath, filename);
+  // 根據是否為 Demo 模式決定讀取路徑
+  const basePath =
+    process.env.USE_MOCK === "true"
+      ? path.join(__dirname, "../public/demo-files")
+      : process.env.FILE_UPLOAD_PATH || path.join(__dirname, "../data/uploads");
 
-  // if (!fs.existsSync(filePath)) {
-  //   return res.status(404).json({ status: 'error', message: '檔案不存在' });
-  // }
+  const filePath = path.join(basePath, filename);
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({
+      status: "error",
+      message: "檔案不存在",
+      path: filePath, // 可先保留除錯，正式版建議移除
+    });
+  }
 
   await logAction(`GET /data/files`, "info", req);
+
   res.setHeader(
     "Content-Disposition",
-    `inline; filename="${encodeURIComponent(filename)}"`,
+    `inline; filename="${encodeURIComponent(path.basename(filename))}"`,
   );
+
   res.sendFile(filePath);
 });
 
