@@ -16,7 +16,15 @@ import {
   getMockDemoRolesPermissions,
 } from "../configs/mockDemoRoles.js";
 const isMock = process.env.USE_MOCK === "true";
+const isProduction = process.env.NODE_ENV === "production";
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+  maxAge: 10 * 60 * 60 * 1000,
+  path: "/",
+};
 /**
  * @swagger
  * /login:
@@ -508,27 +516,11 @@ router.post("/", upload.none(), async (req, res) => {
           : {}),
       };
 
-      const isProduction = process.env.NODE_ENV === "production";
-
-      const cookieOptions = {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction ? "none" : "lax",
-        maxAge: 10 * 60 * 60 * 1000,
-        path: "/",
-      };
-
       const accessToken = jwt.sign(userData, secretKey, {
         expiresIn: "10h",
       });
 
-      res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        maxAge: 10 * 60 * 60 * 1000,
-        path: "/",
-      });
+      res.cookie("accessToken", accessToken, cookieOptions);
 
       await logUserAction({
         user: req.body,
@@ -638,13 +630,7 @@ router.post("/", upload.none(), async (req, res) => {
         userData.username,
       );
 
-      res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        maxAge: 10 * 60 * 60 * 1000,
-        path: "/",
-      });
+      res.cookie("accessToken", accessToken, cookieOptions);
 
       res.status(201).json({
         status: "success",
@@ -658,13 +644,7 @@ router.post("/", upload.none(), async (req, res) => {
       expiresIn: "10m",
     });
 
-    res.cookie("MFAToken", MFAToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 10 * 60 * 60 * 1000,
-      path: "/",
-    });
+    res.cookie("accessToken", accessToken, cookieOptions);
 
     await logUserAction({
       user: req.body,
@@ -770,13 +750,7 @@ router.post("/select-role", upload.none(), async (req, res) => {
       expiresIn: "10h",
     });
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 10 * 60 * 60 * 1000,
-      path: "/",
-    });
+    res.cookie("accessToken", accessToken, cookieOptions);
 
     await logAction(
       `Demo roles selected: ${roleCodes.join(", ")}`,
@@ -949,13 +923,7 @@ router.post("/MFA", upload.none(), async (req, res) => {
 
   await logAction(`[MFA] MFA success`, "info", req);
 
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    maxAge: 10 * 60 * 60 * 1000,
-    path: "/",
-  });
+  res.cookie("accessToken", accessToken, cookieOptions);
 
   res.status(201).json({
     status: "success",
