@@ -508,6 +508,16 @@ router.post("/", upload.none(), async (req, res) => {
           : {}),
       };
 
+      const isProduction = process.env.NODE_ENV === "production";
+
+      const cookieOptions = {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+        maxAge: 10 * 60 * 60 * 1000,
+        path: "/",
+      };
+
       const accessToken = jwt.sign(userData, secretKey, {
         expiresIn: "10h",
       });
@@ -515,6 +525,9 @@ router.post("/", upload.none(), async (req, res) => {
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 10 * 60 * 60 * 1000,
+        path: "/",
       });
 
       await logUserAction({
@@ -628,7 +641,9 @@ router.post("/", upload.none(), async (req, res) => {
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "Strict",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 10 * 60 * 60 * 1000,
+        path: "/",
       });
 
       res.status(201).json({
@@ -646,7 +661,9 @@ router.post("/", upload.none(), async (req, res) => {
     res.cookie("MFAToken", MFAToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 10 * 60 * 60 * 1000,
+      path: "/",
     });
 
     await logUserAction({
@@ -756,7 +773,9 @@ router.post("/select-role", upload.none(), async (req, res) => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 10 * 60 * 60 * 1000,
+      path: "/",
     });
 
     await logAction(
@@ -827,7 +846,9 @@ router.post("/MFA", upload.none(), async (req, res) => {
   res.clearCookie("MFAToken", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "Strict",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 10 * 60 * 60 * 1000,
+    path: "/",
   });
   if (
     process.env.NODE_ENV !== "local" &&
@@ -931,7 +952,9 @@ router.post("/MFA", upload.none(), async (req, res) => {
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "Strict",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 10 * 60 * 60 * 1000,
+    path: "/",
   });
 
   res.status(201).json({
