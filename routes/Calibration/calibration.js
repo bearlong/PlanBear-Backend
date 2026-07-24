@@ -117,6 +117,53 @@ let mockCalibrationLists = [
   },
 ];
 
+let mockCalibrationOrgs = [
+  {
+    id: 1,
+    name: "Calibration Lab",
+    address: "No. 1, Test Rd.",
+    tel: "02-1234-5678",
+    fax: "02-1234-5679",
+    contact: "Bear Shen",
+    email: "calibration.lab@example.com",
+    factory: "TAO",
+    mobile: "0912-345-678",
+  },
+  {
+    id: 2,
+    name: "QA Verification Center",
+    address: "No. 2, QA Ave.",
+    tel: "03-2222-3333",
+    fax: "03-2222-3334",
+    contact: "QA Owner",
+    email: "qa.verify@example.com",
+    factory: "TAO",
+    mobile: "0922-333-444",
+  },
+  {
+    id: 3,
+    name: "Engineering Lab",
+    address: "No. 3, Engineering Blvd.",
+    tel: "04-3333-4444",
+    fax: "04-3333-4445",
+    contact: "Engineering Owner",
+    email: "eng.lab@example.com",
+    factory: "TPE",
+    mobile: "0933-444-555",
+  },
+  {
+    id: 4,
+    name: "Bear Calibration Lab",
+    address: "No. 3, Engineering Blvd.",
+    tel: "04-8888-7777",
+    fax: "04-6666-7777",
+    contact: "大壯",
+    email: "eng.lab@example.com",
+    factory: "TXG",
+    mobile: "0933-123-321",
+  },
+];
+
 const formatDate = (date) => (date ? String(date).slice(0, 10) : null);
 const normalize = (value) => value?.toString().trim().toLowerCase() ?? "";
 const parseBooleanFilter = (value) => {
@@ -1014,7 +1061,30 @@ router.post("/", async (req, res) => {
   const reqBody = req.body;
   try {
     await logAction(`POST /calibration/`, "info", req);
-
+    const instru_id = reqBody.instru_id;
+    const instrument = isMock
+      ? mockCalibrationLists.find(
+          (item) => String(item.id) === String(instru_id),
+        )
+      : mockCalibrationLists;
+    if (!instrument) {
+      return res.status(404).json({
+        status: "error",
+        message: "Instrument not found",
+      });
+    }
+    const external_calibr_id = reqBody.external_calibr_id;
+    const calibration_org = isMock
+      ? mockCalibrationOrgs.find(
+          (item) => String(item.id) === String(external_calibr_id),
+        )
+      : mockCalibrationOrgs;
+    if (!calibration_org) {
+      return res.status(404).json({
+        status: "error",
+        message: "Calibration organization not found",
+      });
+    }
     const result = isMock
       ? (() => {
           const duplicated = mockCalibrations.some(
@@ -1031,6 +1101,8 @@ router.post("/", async (req, res) => {
           }
           const newItem = {
             ...reqBody,
+            instrument,
+            calibration_org,
             id: nextMockId(mockCalibrations),
             created_at: new Date().toISOString(),
             due_date: reqBody.due_date ?? reqBody.date ?? reqBody.change_date,
@@ -1488,13 +1560,18 @@ router.put("/:id", upload.any(), async (req, res) => {
   const { id } = req.params;
   const { ...reqBody } = req.body;
   const files = req.files;
-  console.log(reqBody.instru_id);
   const instrumentId = reqBody.instru_id;
+  const externalCalibrId = reqBody.external_calibr_id;
   const instrument = isMock
     ? mockCalibrationLists.find(
         (item) => String(item.id) === String(instrumentId),
       )
     : mockCalibrationLists;
+  const calibration_org = isMock
+    ? mockCalibrationOrgs.find(
+        (item) => String(item.id) === String(externalCalibrId),
+      )
+    : mockCalibrationOrgs;
 
   try {
     await logAction(`PUT /calibration/${id}`, "info", req);
@@ -1511,6 +1588,7 @@ router.put("/:id", upload.any(), async (req, res) => {
             id: before.id,
             instrument: instrument,
             due_date: reqBody.due_date ?? before.due_date,
+            calibration_org: calibration_org,
           };
           if (reqBody.status && reqBody.status !== before.status) {
             addMockHistory(mockCalibrations[index], {
